@@ -21,20 +21,14 @@ jobs:
         with:
           python-version: "3.11"
 
-            #      - name: Install dependencies for demo app
-            #working-directory: vulnerable-app
-            #run: |
-            #python -m pip install --upgrade pip
-            #pip install -r requirements.txt
-
       - name: Install Safety CLI
         run: |
+          python -m pip install --upgrade pip
           python -m pip install safety
 
       - name: Run Safety scan (JSON output)
         run: |
-          # Safety scans the current environment and/or project files.
-          # We'll run it at repo root so it sees installed packages.
+          # Scan the vulnerable requirements file directly
           safety scan \
             --file vulnerable-app/requirements.txt \
             --output json > safety.json
@@ -44,10 +38,9 @@ jobs:
         with:
           input-file: safety.json
           output-file: safety-results.sarif
-          tool-version: "3.x"    # optional, cosmetic
+          tool-version: "3.7.0"   # purely cosmetic metadata
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: safety-results.sarif
-
