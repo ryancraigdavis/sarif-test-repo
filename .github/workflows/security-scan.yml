@@ -27,9 +27,10 @@ jobs:
           python -m pip install safety
 
       - name: Run Safety scan (JSON output)
+        env:
+          SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
         run: |
-          # Scan the vulnerable requirements file directly
-          safety scan \
+          safety --key "$SAFETY_API_KEY" scan \
             --file vulnerable-app/requirements.txt \
             --output json > safety.json
 
